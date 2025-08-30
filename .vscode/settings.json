@@ -1,6 +1,7 @@
 {
   // 💾 파일을 저장할 때마다 자동으로 포맷팅을 실행합니다.
   "editor.formatOnSave": true,
+  "editor.tabSize": 2,
 
   // 📝 기본 포맷터를 Prettier로 설정합니다.
   // 이렇게 하면 다른 포맷터와의 충돌을 방지할 수 있습니다.

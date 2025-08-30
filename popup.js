@@ -1,43 +1,76 @@
+let isTimerRunning = false;
+let currentInterval = null;
+
 const setHourUp = (e) => {
+  if (isTimerRunning) {
+    return;
+  }
+
   const input = document.getElementById("input-hour");
   const value = parseInt(input.value);
   input.value = (value + 1) % 24;
 };
 
 const setHourDown = (e) => {
+  if (isTimerRunning) {
+    return;
+  }
+
   const input = document.getElementById("input-hour");
   const value = parseInt(input.value);
   input.value = (value - 1 + 24) % 24;
 };
 
 const setMinuteUp = (e) => {
+  if (isTimerRunning) {
+    return;
+  }
+
   const input = document.getElementById("input-minute");
   const value = parseInt(input.value);
   input.value = (value + 1) % 60;
 };
 
 const setMinuteDown = (e) => {
+  if (isTimerRunning) {
+    return;
+  }
+
   const input = document.getElementById("input-minute");
   const value = parseInt(input.value);
   input.value = (value - 1 + 60) % 60;
 };
 
 const setSecondUp = (e) => {
+  if (isTimerRunning) {
+    return;
+  }
+
   const input = document.getElementById("input-second");
   const value = parseInt(input.value);
   input.value = (value + 1) % 60;
 };
 
 const setSecondDown = (e) => {
+  if (isTimerRunning) {
+    return;
+  }
+
   const input = document.getElementById("input-second");
   const value = parseInt(input.value);
   input.value = (value - 1 + 60) % 60;
 };
 
-let isTimerRunning = false;
-let currentInterval = null;
-
 const startTimer = (e) => {
+  if (isTimerRunning) {
+    return;
+  }
+
+  if (currentInterval) {
+    clearInterval(currentInterval);
+    currentInterval = null;
+  }
+
   const hour = document.getElementById("input-hour").value;
   const minute = document.getElementById("input-minute").value;
   const second = document.getElementById("input-second").value;
@@ -50,32 +83,60 @@ const startTimer = (e) => {
     return;
   }
 
-  isTimerRunning = true;
-  updateButtonState();
-  disableInputs();
+  chrome.runtime.sendMessage(
+    {
+      action: "setTimer",
+      seconds: totalSeconds,
+    },
+    (response) => {
+      if (!(response || response.success)) {
+        alert("타이머 설정에 실패했습니다.");
+        return;
+      }
 
-  startCountdown(totalSeconds);
+      isTimerRunning = true;
+      updateButtonState();
+      disableInputs();
+      setCountdown(totalSeconds);
+    }
+  );
 };
 
 const stopTimer = (e) => {
-  //   chrome.runtime.sendMessage({ action: "stopTimer" });
+  if (!isTimerRunning) {
+    return;
+  }
 
   if (currentInterval) {
     clearInterval(currentInterval);
     currentInterval = null;
   }
 
-  isTimerRunning = false;
-  updateButtonState();
-  enableInputs();
+  chrome.runtime.sendMessage(
+    {
+      action: "cancelTimer",
+      tabId: currentTabId,
+    },
+    (response) => {
+      if (!(response || response.success)) {
+        alert("타이머 취소에 실패했습니다.");
+        return;
+      }
+
+      isTimerRunning = false;
+      updateButtonState();
+      enableInputs();
+    }
+  );
 };
 
 const toggleTimer = () => {
-  if (isTimerRunning) {
-    stopTimer();
-  } else {
+  if (!isTimerRunning) {
     startTimer();
+    return;
   }
+
+  stopTimer();
 };
 
 const updateButtonState = () => {
@@ -103,7 +164,7 @@ const disableInputs = () => {
   document.getElementById("input-second").disabled = true;
 };
 
-const startCountdown = (remainingTime) => {
+const setCountdown = (remainingTime) => {
   if (currentInterval) {
     clearInterval(currentInterval);
   }
@@ -119,11 +180,13 @@ const startCountdown = (remainingTime) => {
     }
 
     remainingTime = remainingTime - 1;
+
     let currentRemainingTime = remainingTime;
     const hours = Math.floor(currentRemainingTime / 60 / 60);
-    currentRemainingTime = currentRemainingTime - hours * 60 * 60;
 
+    currentRemainingTime = currentRemainingTime - hours * 60 * 60;
     const minutes = Math.floor(currentRemainingTime / 60);
+
     currentRemainingTime = currentRemainingTime - minutes * 60;
     const seconds = currentRemainingTime;
 
@@ -134,22 +197,12 @@ const startCountdown = (remainingTime) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 현재 탭 정보 가져오기
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const currentTabId = tabs[0].id;
-
-    // background.js에 종료 시간을 물어봄
-    chrome.runtime.sendMessage(
-      { action: "getTimer", tabId: currentTabId },
-      (response) => {
-        // 3단계: 응답 처리
-        if (response && response.remainingTime) {
-          isTimerRunning = true;
-          updateButtonState();
-          disableInputs();
-          startCountdown(response.remainingTime);
-        }
-      }
-    );
+  chrome.runtime.sendMessage({ action: "getTimer" }, (response) => {
+    if (response && response.remainingTime) {
+      isTimerRunning = true;
+      updateButtonState();
+      disableInputs();
+      setCountdown(response.remainingTime);
+    }
   });
 });
