@@ -5,19 +5,9 @@
   "description": "지정한 시간이 지나면 현재 탭을 자동으로 닫아주는 확장 프로그램입니다.",
   "permissions": ["tabs", "storage", "alarms"],
   "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "images/icon16.png",
-      "48": "images/icon48.png",
-      "128": "images/icon128.png"
-    }
+    "default_popup": "popup.html"
   },
   "background": {
     "service_worker": "background.js"
-  },
-  "icons": {
-    "16": "images/icon16.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
   }
 }

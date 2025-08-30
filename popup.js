@@ -95,8 +95,8 @@ const startTimer = (e) => {
       }
 
       isTimerRunning = true;
-      updateButtonState();
       disableInputs();
+      updateButtonStop();
       setCountdown(totalSeconds);
     }
   );
@@ -115,7 +115,6 @@ const stopTimer = (e) => {
   chrome.runtime.sendMessage(
     {
       action: "cancelTimer",
-      tabId: currentTabId,
     },
     (response) => {
       if (!(response || response.success)) {
@@ -124,7 +123,7 @@ const stopTimer = (e) => {
       }
 
       isTimerRunning = false;
-      updateButtonState();
+      updateButtonStart();
       enableInputs();
     }
   );
@@ -139,17 +138,18 @@ const toggleTimer = () => {
   stopTimer();
 };
 
-const updateButtonState = () => {
+const updateButtonStop = () => {
   const button = document.getElementById("timer-button");
   const icon = button.querySelector(".button-icon");
+  icon.className = "fas fa-stop button-icon";
+  button.lastChild.textContent = "타이머 중지";
+};
 
-  if (isTimerRunning) {
-    icon.className = "fas fa-stop button-icon";
-    button.lastChild.textContent = "타이머 중지";
-  } else {
-    icon.className = "fas fa-play button-icon";
-    button.lastChild.textContent = "타이머 시작";
-  }
+const updateButtonStart = () => {
+  const button = document.getElementById("timer-button");
+  const icon = button.querySelector(".button-icon");
+  icon.className = "fas fa-play button-icon";
+  button.lastChild.textContent = "타이머 시작";
 };
 
 const enableInputs = () => {
@@ -170,39 +170,51 @@ const setCountdown = (remainingTime) => {
   }
 
   currentInterval = setInterval(() => {
-    if (remainingTime <= 0) {
-      clearInterval(currentInterval);
-      currentInterval = null;
-      isTimerRunning = false;
-      updateButtonState();
-      enableInputs();
-      return;
-    }
-
     remainingTime = remainingTime - 1;
-
-    let currentRemainingTime = remainingTime;
-    const hours = Math.floor(currentRemainingTime / 60 / 60);
-
-    currentRemainingTime = currentRemainingTime - hours * 60 * 60;
-    const minutes = Math.floor(currentRemainingTime / 60);
-
-    currentRemainingTime = currentRemainingTime - minutes * 60;
-    const seconds = currentRemainingTime;
-
-    document.getElementById("input-hour").value = hours;
-    document.getElementById("input-minute").value = minutes;
-    document.getElementById("input-second").value = seconds;
+    setTimeBySeconds(remainingTime);
   }, 1000);
 };
 
+const setTimeBySeconds = (seconds) => {
+  document.getElementById("input-hour").value = Math.floor(seconds / 3600);
+  document.getElementById("input-minute").value = Math.floor(
+    (seconds % 3600) / 60
+  );
+  document.getElementById("input-second").value = seconds % 60;
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+  // 이벤트 리스너 등록
+  document.getElementById("hour-up").addEventListener("click", setHourUp);
+  document.getElementById("hour-down").addEventListener("click", setHourDown);
+  document.getElementById("minute-up").addEventListener("click", setMinuteUp);
+  document
+    .getElementById("minute-down")
+    .addEventListener("click", setMinuteDown);
+  document.getElementById("second-up").addEventListener("click", setSecondUp);
+  document
+    .getElementById("second-down")
+    .addEventListener("click", setSecondDown);
+  document
+    .getElementById("timer-button")
+    .addEventListener("click", toggleTimer);
+
   chrome.runtime.sendMessage({ action: "getTimer" }, (response) => {
     if (response && response.remainingTime) {
       isTimerRunning = true;
-      updateButtonState();
+      setTimeBySeconds(Math.floor(response.remainingTime / 1000));
+      updateButtonStop();
       disableInputs();
-      setCountdown(response.remainingTime);
+      setCountdown(Math.floor(response.remainingTime / 1000));
+      return;
     }
+    chrome.runtime.sendMessage(
+      { action: "getRecentlySetSeconds" },
+      (response) => {
+        setTimeBySeconds(response.recentlySetSeconds);
+        updateButtonStart();
+        enableInputs();
+      }
+    );
   });
 });

@@ -17,24 +17,24 @@
       <div class="time-picker-container">
         <div class="time-inputs-wrapper">
           <div class="time-unit">
-            <button class="time-control up-button" onclick="setHourUp()">
+            <button id="hour-up" class="time-control up-button">
               <i class="fas fa-chevron-up"></i>
             </button>
             <input type="text" id="input-hour" class="time-input" value="0" />
-            <button class="time-control down-button" onclick="setHourDown()">
+            <button id="hour-down" class="time-control down-button">
               <i class="fas fa-chevron-down"></i>
             </button>
-            <div class="unit-label">시</div>
+            <div class="unit-label">시간</div>
           </div>
 
           <div class="separator">:</div>
 
           <div class="time-unit">
-            <button class="time-control up-button" onclick="setMinuteUp()">
+            <button id="minute-up" class="time-control up-button">
               <i class="fas fa-chevron-up"></i>
             </button>
             <input type="text" id="input-minute" class="time-input" value="0" />
-            <button class="time-control down-button" onclick="setMinuteDown()">
+            <button id="minute-down" class="time-control down-button">
               <i class="fas fa-chevron-down"></i>
             </button>
             <div class="unit-label">분</div>
@@ -43,11 +43,11 @@
           <div class="separator">:</div>
 
           <div class="time-unit">
-            <button class="time-control up-button" onclick="setSecondUp()">
+            <button id="second-up" class="time-control up-button">
               <i class="fas fa-chevron-up"></i>
             </button>
             <input type="text" id="input-second" class="time-input" value="0" />
-            <button class="time-control down-button" onclick="setSecondDown()">
+            <button id="second-down" class="time-control down-button">
               <i class="fas fa-chevron-down"></i>
             </button>
             <div class="unit-label">초</div>
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="action-footer">
-        <button id="timer-button" onclick="toggleTimer()" class="start-button">
+        <button id="timer-button" class="start-button">
           <i class="fas fa-play button-icon"></i>
           타이머 시작
         </button>

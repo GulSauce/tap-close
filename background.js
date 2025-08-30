@@ -1,41 +1,68 @@
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "getTimer") {
-    const tabId = await getTabId();
-    const alarmName = `closeTab-${tabId}`;
+    (async () => {
+      const tabId = await getTabId();
+      const alarmName = `closeTab-${tabId}`;
 
-    chrome.alarms.get(alarmName, (alarm) => {
-      if (alarm) {
-        remainingTime = alarm.when - Date.now();
-        sendResponse({ remainingTime: remainingTime });
-      } else {
-        sendResponse({ remainingTime: null });
-      }
-    });
+      chrome.alarms.get(alarmName, (alarm) => {
+        if (alarm) {
+          const remainingTime = alarm.scheduledTime - Date.now();
+          sendResponse({ remainingTime: remainingTime });
+        } else {
+          sendResponse({ remainingTime: null });
+        }
+      });
+    })();
+    return true;
+  }
+
+  if (message.action === "getRecentlySetSeconds") {
+    (async () => {
+      const recentlySetSeconds =
+        (await chrome.storage.local.get("recentlySetSeconds"))
+          .recentlySetSeconds || 0;
+
+      sendResponse({ recentlySetSeconds: recentlySetSeconds });
+    })();
+    return true;
   }
 
   if (message.action === "setTimer") {
-    const tabId = await getTabId();
+    (async () => {
+      const tabId = await getTabId();
+      if (!tabId) return;
 
-    chrome.alarms.create(`closeTab-${tabId}`, {
-      when: message.seconds * 1000 + Date.now(),
-    });
+      chrome.storage.local.set({ recentlySetSeconds: message.seconds });
 
-    sendResponse({ success: true });
+      chrome.alarms.create(`closeTab-${tabId}`, {
+        when: message.seconds * 1000 + Date.now(),
+      });
+      sendResponse({ success: true });
+    })();
+    return true;
   }
 
   if (message.action === "cancelTimer") {
-    const tabId = await getTabId();
-    chrome.alarms.clear(`closeTab-${tabId}`);
-  }
+    (async () => {
+      const tabId = await getTabId();
+      if (!tabId) return;
 
-  return true;
+      chrome.alarms.clear(`closeTab-${tabId}`, (wasCleared) => {
+        sendResponse({ success: wasCleared });
+      });
+    })();
+    return true;
+  }
 });
 
 const getTabId = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      resolve(tabs[0].id);
-      reject(null);
+      if (tabs && tabs.length > 0 && tabs[0].id) {
+        resolve(tabs[0].id);
+      } else {
+        resolve(null);
+      }
     });
   });
 };
@@ -43,8 +70,9 @@ const getTabId = () => {
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name.startsWith("closeTab-")) {
     const tabIdToClose = parseInt(alarm.name.split("-")[1]);
-
-    chrome.tabs.remove(tabIdToClose, () => {});
-    chrome.alarms.clear(alarm.name);
+    if (!isNaN(tabIdToClose)) {
+      chrome.tabs.remove(tabIdToClose);
+      chrome.alarms.clear(alarm.name);
+    }
   }
 });
