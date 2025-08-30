@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>탭 자동 종료</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="custom-container">
+      <div class="banner">
+        <h1 class="banner-title">탭 자동 종료 타이머</h1>
+      </div>
+      <div class="time-picker-container">
+        <div class="time-inputs-wrapper">
+          <div class="time-unit">
+            <button class="time-control up-button" onclick="setHourUp()">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+            <input type="text" id="input-hour" class="time-input" value="0" />
+            <button class="time-control down-button" onclick="setHourDown()">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="unit-label">시</div>
+          </div>
+
+          <div class="separator">:</div>
+
+          <div class="time-unit">
+            <button class="time-control up-button" onclick="setMinuteUp()">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+            <input type="text" id="input-minute" class="time-input" value="0" />
+            <button class="time-control down-button" onclick="setMinuteDown()">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="unit-label">분</div>
+          </div>
+
+          <div class="separator">:</div>
+
+          <div class="time-unit">
+            <button class="time-control up-button" onclick="setSecondUp()">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+            <input type="text" id="input-second" class="time-input" value="0" />
+            <button class="time-control down-button" onclick="setSecondDown()">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="unit-label">초</div>
+          </div>
+        </div>
+      </div>
+      <div class="action-footer">
+        <button id="timer-button" onclick="toggleTimer()" class="start-button">
+          <i class="fas fa-play button-icon"></i>
+          타이머 시작
+        </button>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

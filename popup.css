@@ -1,0 +1,137 @@
+body {
+  background-color: #f0f2f5;
+  font-family: sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.custom-container {
+  width: 24rem;
+  height: fit-content;
+  background-color: #ffffff;
+}
+
+.banner {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 1rem;
+  text-align: center;
+}
+
+.banner-title {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.time-picker-container {
+  padding: 2rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.time-inputs-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.time-unit {
+  text-align: center;
+}
+
+.time-control {
+  width: 4rem;
+  height: 1.5rem;
+  background-color: #3b82f6;
+  color: white;
+  font-size: 0.75rem;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.time-control:hover {
+  background-color: #2563eb;
+}
+
+.up-button {
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+}
+
+.down-button {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.time-input {
+  width: 4rem;
+  height: 3rem;
+  text-align: center;
+  font-size: 1.125rem;
+  font-family: monospace;
+  border: 1px solid #d1d5db;
+  border-top: none;
+  border-bottom: none;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.time-input:focus {
+  border: 1px solid #3b82f6;
+}
+
+.unit-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.separator {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #9ca3af;
+  line-height: 3.5rem;
+}
+
+.action-footer {
+  padding: 1rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.start-button {
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition-property: background-color;
+  transition-duration: 200ms;
+}
+
+.start-button:hover {
+  background-color: #1d4ed8;
+}
+
+.start-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #3b82f6;
+}
+
+.button-icon {
+  margin-right: 0.5rem;
+}

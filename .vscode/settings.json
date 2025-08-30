@@ -1,0 +1,38 @@
+{
+  // 💾 파일을 저장할 때마다 자동으로 포맷팅을 실행합니다.
+  "editor.formatOnSave": true,
+
+  // 📝 기본 포맷터를 Prettier로 설정합니다.
+  // 이렇게 하면 다른 포맷터와의 충돌을 방지할 수 있습니다.
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // 📄 언어별로 다른 포맷터를 사용하고 싶을 때 설정합니다.
+  // 예를 들어, JavaScript와 TypeScript 파일은 Prettier를 사용하도록 명시합니다.
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ✨ ESLint와 통합하여 저장 시 자동으로 문제를 수정하고 포맷팅합니다.
+  // 이 설정을 통해 ESLint 규칙에 맞는 코드 스타일을 유지할 수 있습니다.
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
+}
